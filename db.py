@@ -33,7 +33,7 @@ class Database:
             (chat_id, user_id, message_id, message_text, date, time, type, is_english)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """,
-            (chat_id, user_id, message_id, text, date, time, msg_type, self.is_english_text(text))
+            (chat_id, user_id, message_id, text, date, time, msg_type, self.is_english(text))
         )
         self.conn.commit()
 

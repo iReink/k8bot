@@ -5,7 +5,7 @@ from db import Database
 
 # --- Настройки ---
 REWARD_HOUR = 22       # час награждения (0-23)
-REWARD_MINUTE = 40      # минуты
+REWARD_MINUTE = 42      # минуты
 MOST_ACTIVE_REWARD = 10
 LONGEST_MESSAGE_REWARD = 10
 

@@ -2,21 +2,25 @@ import sqlite3
 
 DB_NAME = "stats.db"
 
-def add_type_column():
+def create_reward_log_table():
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
 
-    # Проверяем, есть ли уже столбец type
-    cursor.execute("PRAGMA table_info(messages);")
-    columns = [col[1] for col in cursor.fetchall()]
-    if "type" not in columns:
-        cursor.execute("ALTER TABLE messages ADD COLUMN type TEXT;")
-        print("Столбец 'type' добавлен в таблицу messages.")
-    else:
-        print("Столбец 'type' уже существует.")
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS reward_log (
+        chat_id INTEGER NOT NULL,
+        user_id INTEGER NOT NULL,
+        date TEXT NOT NULL,
+        time TEXT NOT NULL,
+        reward TEXT NOT NULL,
+        amount INTEGER NOT NULL,
+        PRIMARY KEY (chat_id, user_id, date, time, reward)
+    );
+    """)
 
     conn.commit()
     conn.close()
+    print("Таблица 'reward_log' успешно создана или уже существует.")
 
 if __name__ == "__main__":
-    add_type_column()
+    create_reward_log_table()

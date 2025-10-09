@@ -28,11 +28,12 @@ db = Database()
 # --- Массив приветствий ---
 GREETINGS = [
     "Hello, {nick}! How are you today?",
-    "We are greeting you, {nick}. How is your day going?",
+    "Good to see you, {nick}. How is your day going?",
     "Welcome, {nick}! Hope you are having a productive day.",
     "Hi, {nick}! Excited to see you here. How are things?",
     "Greetings, {nick}! Ready to practice some English today?"
 ]
+
 
 # --- Обработчик всех сообщений ---
 @dp.message()
@@ -45,21 +46,43 @@ async def handle_message(message: types.Message):
             nick = f"@{new_user.username}" if new_user.username else new_user.full_name
             db.add_user(message.chat.id, new_user.id, new_user.full_name, nick)
             logger.info(f"Added new user {nick} ({new_user.id}) in chat '{chat_name}'")
-            # Приветствие
             greeting = random.choice(GREETINGS).format(nick=nick)
             await message.answer(greeting)
             logger.info(f"Greeted user {nick} in chat '{chat_name}'")
-        return  # Не обрабатываем дальше как обычное сообщение
+        return
 
-    # --- Проверка текста для сохранения ---
+    # --- Определение типа сообщения ---
+    msg_type = None
+    text = None
+
     if message.text:
+        msg_type = "text"
         text = message.text
-    elif message.photo and message.caption:
-        text = message.caption
+    elif message.photo:
+        msg_type = "photo"
+        text = message.caption or ""
+    elif message.voice:
+        msg_type = "voice"
+        text = message.caption or ""
+    elif message.video:
+        msg_type = "video"
+        text = message.caption or ""
+    elif message.sticker:
+        msg_type = "sticker"
+        text = message.sticker.emoji or ""
+    elif message.document:
+        msg_type = "document"
+        text = message.caption or ""
+    elif message.animation:
+        msg_type = "gif"
+        text = message.caption or ""
+    elif message.audio:
+        msg_type = "audio"
+        text = message.caption or ""
     else:
-        return  # Игнорируем все остальные типы сообщений
+        msg_type = "other"
 
-    # --- Проверка и добавление пользователя в базу ---
+    # --- Проверка и добавление пользователя ---
     if not db.user_exists(message.chat.id, message.from_user.id):
         nick = f"@{message.from_user.username}" if message.from_user.username else message.from_user.full_name
         db.add_user(message.chat.id, message.from_user.id, message.from_user.full_name, nick)
@@ -73,9 +96,14 @@ async def handle_message(message: types.Message):
         message_id=message.message_id,
         text=text,
         date=now.strftime("%Y-%m-%d"),
-        time=now.strftime("%H:%M:%S")
+        time=now.strftime("%H:%M:%S"),
+        msg_type=msg_type
     )
-    logger.info(f"Saved message {message.message_id} from user {message.from_user.id} in chat '{chat_name}'")
+
+    logger.info(
+        f"Saved {msg_type} message {message.message_id} from user {message.from_user.id} in chat '{chat_name}'"
+    )
+
 
 
 # --- Запуск бота ---

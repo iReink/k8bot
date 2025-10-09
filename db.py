@@ -25,13 +25,14 @@ class Database:
         return self.cursor.fetchone() is not None
 
     # --- Сообщения ---
-    def add_message(self, chat_id: int, user_id: int, message_id: int, text: str, date: str, time: str):
-        is_eng = self.is_english(text)
-        self.cursor.execute("""
-            INSERT OR IGNORE INTO messages (chat_id, user_id, message_id, message_text, date, time, is_english)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (chat_id, user_id, message_id, text, date, time, is_eng))
-        self.conn.commit()
+    def add_message(self, chat_id, user_id, message_id, text, date, time, msg_type):
+        conn = self.connection
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT OR IGNORE INTO messages (chat_id, user_id, message_id, message_text, date, time, type, is_english) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            (chat_id, user_id, message_id, text, date, time, msg_type, self.is_english_text(text))
+        )
+        conn.commit()
 
     # --- Проверка текста на английский ---
     @staticmethod

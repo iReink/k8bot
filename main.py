@@ -35,6 +35,8 @@ GREETINGS = [
 ]
 
 
+
+
 # --- Обработчик всех сообщений ---
 @dp.message()
 async def handle_message(message: types.Message):
@@ -90,6 +92,7 @@ async def handle_message(message: types.Message):
 
     # --- Сохранение сообщения ---
     now = datetime.now()
+    is_forwarded = message.forward_from is not None or message.forward_sender_name is not None
     db.add_message(
         chat_id=message.chat.id,
         user_id=message.from_user.id,
@@ -97,7 +100,8 @@ async def handle_message(message: types.Message):
         text=text,
         date=now.strftime("%Y-%m-%d"),
         time=now.strftime("%H:%M:%S"),
-        msg_type=msg_type
+        msg_type=msg_type,
+        is_forwarded=is_forwarded
     )
 
     logger.info(

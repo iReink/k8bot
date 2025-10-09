@@ -3,7 +3,12 @@ import re
 
 DB_PATH = "stats.db"
 
+# --- Сообщения от них будут игнорироваться ---
+
+
 class Database:
+    IGNORED_USERS = [749027951]
+
     def __init__(self, path=DB_PATH):
         self.conn = sqlite3.connect(path)
         self.cursor = self.conn.cursor()
@@ -25,7 +30,17 @@ class Database:
         return self.cursor.fetchone() is not None
 
     # --- Сообщения ---
-    def add_message(self, chat_id, user_id, message_id, text, date, time, msg_type):
+    def add_message(self, chat_id, user_id, message_id, text, date, time, msg_type, is_forwarded=False):
+        # Игнорировать пересланные сообщения
+        if is_forwarded:
+            print(f"⏩ Ignored forwarded message from user {user_id}")
+            return
+
+        # Игнорировать определённых пользователей
+        if user_id in self.ignored_users:
+            print(f"🚫 Ignored message from ignored user {user_id}")
+            return
+
         cursor = self.conn.cursor()
         cursor.execute(
             """

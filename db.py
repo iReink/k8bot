@@ -7,7 +7,7 @@ DB_PATH = "stats.db"
 
 
 class Database:
-    IGNORED_USERS = [749027951]
+    ignored_users = [749027951]
 
     def __init__(self, path=DB_PATH):
         self.conn = sqlite3.connect(path)

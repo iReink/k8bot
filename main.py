@@ -25,6 +25,9 @@ bot = Bot(token=API_TOKEN)
 dp = Dispatcher()
 db = Database()
 
+from daily_reward import daily_reward_task
+import asyncio
+
 # --- Массив приветствий ---
 GREETINGS = [
     "Hello, {nick}! How are you today?",
@@ -114,7 +117,13 @@ async def handle_message(message: types.Message):
 async def main():
     try:
         logger.info("Bot is starting...")
+
+        # Запускаем ежедневную награду параллельно
+        asyncio.create_task(daily_reward_task(bot))
+
+        # Запуск бота
         await dp.start_polling(bot)
+
     except Exception as e:
         logger.exception(f"Error while running bot: {e}")
     finally:
@@ -125,3 +134,4 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+

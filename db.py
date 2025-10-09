@@ -61,3 +61,38 @@ class Database:
 
     def close(self):
         self.conn.close()
+
+    def add_koins(self, chat_id: int, user_id: int, amount: int):
+        """
+        Увеличивает баланс коинов пользователя на указанное значение.
+
+        :param chat_id: ID чата
+        :param user_id: ID пользователя
+        :param amount: количество коинов для добавления (может быть отрицательным для списания)
+        """
+        cursor = self.conn.cursor()
+
+        # Проверяем, есть ли пользователь в базе
+        cursor.execute(
+            "SELECT koins FROM users WHERE chat_id = ? AND user_id = ?",
+            (chat_id, user_id)
+        )
+        result = cursor.fetchone()
+        if result is None:
+            # Если пользователя нет, можно либо создать его, либо просто выйти
+            # Здесь создадим его с начальными коинами равными amount
+            cursor.execute(
+                "INSERT INTO users (chat_id, user_id, name, nick, koins) VALUES (?, ?, ?, ?, ?)",
+                (chat_id, user_id, "Unknown", f"@user{user_id}", amount)
+            )
+            self.conn.commit()
+            return
+
+        # Если пользователь есть, увеличиваем коинов
+        new_balance = result[0] + amount
+        cursor.execute(
+            "UPDATE users SET koins = ? WHERE chat_id = ? AND user_id = ?",
+            (new_balance, chat_id, user_id)
+        )
+        self.conn.commit()
+

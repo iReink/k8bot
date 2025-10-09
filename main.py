@@ -26,7 +26,8 @@ dp = Dispatcher()
 db = Database()
 
 from daily_reward import daily_reward_task
-import asyncio
+from weekly_reward import weekly_reward_task
+from monthly_reward import monthly_reward_task
 
 # --- Массив приветствий ---
 GREETINGS = [
@@ -120,6 +121,8 @@ async def main():
 
         # Запускаем ежедневную награду параллельно
         asyncio.create_task(daily_reward_task(bot))
+        asyncio.create_task(weekly_reward_task(bot))
+        asyncio.create_task(monthly_reward_task(bot))
 
         # Запуск бота
         await dp.start_polling(bot)

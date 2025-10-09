@@ -4,8 +4,8 @@ import random
 from db import Database
 
 # --- Настройки ---
-REWARD_HOUR = 22       # час награждения (0-23)
-REWARD_MINUTE = 42      # минуты
+REWARD_HOUR = 21       # час награждения (0-23)
+REWARD_MINUTE = 0      # минуты
 MOST_ACTIVE_REWARD = 10
 LONGEST_MESSAGE_REWARD = 10
 

@@ -63,6 +63,7 @@ async def monthly_reward_task(bot):
         if most_active:
             chat_id, user_id, nick, count = most_active  # теперь count = количество сообщений
             db.add_koins(chat_id, user_id, MONTHLY_REWARD)
+            db.log_reward(chat_id, user_id, "monthly_most_active", MONTHLY_REWARD)
             message_text = random.choice(MOST_ACTIVE_MESSAGES).format(
                 nick=nick,
                 most_active_reward=MONTHLY_REWARD,
@@ -84,6 +85,7 @@ async def monthly_reward_task(bot):
         if longest_message:
             chat_id, user_id, nick, _ = longest_message
             db.add_koins(chat_id, user_id, MONTHLY_REWARD)
+            db.log_reward(chat_id, user_id, "monthly_longest_message", MONTHLY_REWARD)
             message_text = random.choice(LONGEST_MESSAGE_MESSAGES).format(
                 nick=nick, longest_message_reward=MONTHLY_REWARD
             )

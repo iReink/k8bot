@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b49ce1fc-bad8-479c-a71a-db81dfed4435" name="Changes" comment="Добавлены еженедельные и ежемесячные награды" />
+    <list default="true" id="b49ce1fc-bad8-479c-a71a-db81dfed4435" name="Changes" comment="Создание новой таблицы для лога наград">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/daily_reward.py" beforeDir="false" afterPath="$PROJECT_DIR$/daily_reward.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.py" beforeDir="false" afterPath="$PROJECT_DIR$/db.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/monthly_reward.py" beforeDir="false" afterPath="$PROJECT_DIR$/monthly_reward.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/weekly_reward.py" beforeDir="false" afterPath="$PROJECT_DIR$/weekly_reward.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -160,7 +166,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760033964200</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Создание новой таблицы для лога наград">
+      <option name="closed" value="true" />
+      <created>1760034342431</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1760034342431</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -183,6 +197,7 @@
     <MESSAGE value="Игнор сообщений юзера и пересланных" />
     <MESSAGE value="Первый тест ежедневных наград" />
     <MESSAGE value="Добавлены еженедельные и ежемесячные награды" />
-    <option name="LAST_COMMIT_MESSAGE" value="Добавлены еженедельные и ежемесячные награды" />
+    <MESSAGE value="Создание новой таблицы для лога наград" />
+    <option name="LAST_COMMIT_MESSAGE" value="Создание новой таблицы для лога наград" />
   </component>
 </project>

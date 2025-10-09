@@ -96,3 +96,25 @@ class Database:
         )
         self.conn.commit()
 
+    def log_reward(self, chat_id: int, user_id: int, reward: str, amount: int):
+        """
+        Добавляет запись в таблицу reward_log о начисленной награде.
+
+        :param chat_id: ID чата
+        :param user_id: ID пользователя
+        :param reward: Тип/название награды (например, 'daily_most_active')
+        :param amount: Количество коинов, начисленных за награду
+        """
+        from datetime import datetime
+        now = datetime.now()
+        date_str = now.strftime("%Y-%m-%d")
+        time_str = now.strftime("%H:%M:%S")
+
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            INSERT OR IGNORE INTO reward_log (chat_id, user_id, date, time, reward, amount)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (chat_id, user_id, date_str, time_str, reward, amount))
+        self.conn.commit()
+
+

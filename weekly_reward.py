@@ -61,6 +61,7 @@ async def weekly_reward_task(bot):
         if most_active:
             chat_id, user_id, nick, _ = most_active
             db.add_koins(chat_id, user_id, WEEKLY_REWARD)
+            db.log_reward(chat_id, user_id, "weekly_most_active", WEEKLY_REWARD)
             message_text = random.choice(MOST_ACTIVE_MESSAGES).format(
                 nick=nick, most_active_reward=WEEKLY_REWARD
             )
@@ -80,6 +81,7 @@ async def weekly_reward_task(bot):
         if longest_message:
             chat_id, user_id, nick, _ = longest_message
             db.add_koins(chat_id, user_id, WEEKLY_REWARD)
+            db.log_reward(chat_id, user_id, "weekly_longest_message", WEEKLY_REWARD)
             message_text = random.choice(LONGEST_MESSAGE_MESSAGES).format(
                 nick=nick, longest_message_reward=WEEKLY_REWARD
             )

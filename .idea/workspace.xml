@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b49ce1fc-bad8-479c-a71a-db81dfed4435" name="Changes" comment="Фикс бага">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.py" beforeDir="false" afterPath="$PROJECT_DIR$/db.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-    </list>
+    <list default="true" id="b49ce1fc-bad8-479c-a71a-db81dfed4435" name="Changes" comment="- обновлены приветствия&#10;- в таблицу messages добавлено поле type&#10;- теперь бот учитывает все сообщения и отправляет в БД тип сообщения" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -92,7 +88,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759953628035</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="- обновлены приветствия&#10;- в таблицу messages добавлено поле type&#10;- теперь бот учитывает все сообщения и отправляет в БД тип сообщения">
+      <option name="closed" value="true" />
+      <created>1760020858610</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1760020858610</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -110,6 +114,7 @@
     <MESSAGE value="Добавлены первые таблицы" />
     <MESSAGE value="Первая версия бота, который приветствует новичка, добавляет его в БД. Также обрабатывает все сообщения и помещает текстовые в БД, определяя английские ли они" />
     <MESSAGE value="Фикс бага" />
-    <option name="LAST_COMMIT_MESSAGE" value="Фикс бага" />
+    <MESSAGE value="- обновлены приветствия&#10;- в таблицу messages добавлено поле type&#10;- теперь бот учитывает все сообщения и отправляет в БД тип сообщения" />
+    <option name="LAST_COMMIT_MESSAGE" value="- обновлены приветствия&#10;- в таблицу messages добавлено поле type&#10;- теперь бот учитывает все сообщения и отправляет в БД тип сообщения" />
   </component>
 </project>

@@ -26,13 +26,16 @@ class Database:
 
     # --- Сообщения ---
     def add_message(self, chat_id, user_id, message_id, text, date, time, msg_type):
-        conn = self.connection
-        cursor = conn.cursor()
+        cursor = self.conn.cursor()
         cursor.execute(
-            "INSERT OR IGNORE INTO messages (chat_id, user_id, message_id, message_text, date, time, type, is_english) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            """
+            INSERT OR IGNORE INTO messages 
+            (chat_id, user_id, message_id, message_text, date, time, type, is_english)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """,
             (chat_id, user_id, message_id, text, date, time, msg_type, self.is_english_text(text))
         )
-        conn.commit()
+        self.conn.commit()
 
     # --- Проверка текста на английский ---
     @staticmethod

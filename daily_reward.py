@@ -86,4 +86,4 @@ async def daily_reward_task(bot):
             await bot.send_message(chat_id, message_text)
 
         # --- Ждём следующий день ---
-        await asyncio.sleep(1)  # небольшой sleep для предотвращения мгновенного повторного запуска
+        await asyncio.sleep(60)  # небольшой sleep для предотвращения мгновенного повторного запуска

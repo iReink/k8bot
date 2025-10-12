@@ -91,4 +91,4 @@ async def monthly_reward_task(bot):
             )
             await bot.send_message(chat_id, message_text)
 
-        await asyncio.sleep(1)
+        await asyncio.sleep(60)

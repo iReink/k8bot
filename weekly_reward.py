@@ -20,24 +20,34 @@ LONGEST_MESSAGE_MESSAGES = [
 # --- Корутина еженедельной награды ---
 async def weekly_reward_task(bot):
     db = Database()
+    last_reward_date = None  # дата последней награды
+
     while True:
         now = datetime.now()
 
-        # Следующее воскресенье
+        # следующее воскресенье
         reward_time = now.replace(hour=REWARD_HOUR, minute=REWARD_MINUTE, second=0, microsecond=0)
         days_ahead = 6 - reward_time.weekday()  # 0 = Monday
         if days_ahead < 0:
             days_ahead += 7
         reward_time += timedelta(days=days_ahead)
 
-        # Если уже после награды
+        # если уже после награды — на следующее воскресенье
         if now >= reward_time:
             reward_time += timedelta(weeks=1)
 
         wait_seconds = (reward_time - now).total_seconds()
         await asyncio.sleep(wait_seconds)
 
-        # Диапазон сообщений: с прошлой награды до текущей
+        # --- защита от двойной награды ---
+        today = datetime.now().date()
+        if last_reward_date == today:
+            await asyncio.sleep(60)
+            continue
+
+        last_reward_date = today  # запоминаем дату, чтобы не выдать награду снова
+
+        # диапазон сообщений
         end_time = reward_time
         start_time = end_time - timedelta(weeks=1)
 
@@ -87,4 +97,6 @@ async def weekly_reward_task(bot):
             )
             await bot.send_message(chat_id, message_text)
 
-        await asyncio.sleep(1)
+        # чтобы не сработало дважды из-за миллисекунд
+        await asyncio.sleep(60)
+

@@ -1,5 +1,6 @@
 from aiogram import Router, types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.filters import Command
 from db import Database
 from datetime import datetime
 
@@ -11,7 +12,7 @@ def plural_koins(amount: int) -> str:
     return "koin" if amount == 1 else "koins"
 
 # --- Команда /shop ---
-@router.message(commands=["shop"])
+@router.message(Command("shop"))
 async def shop_command_handler(message: types.Message):
     chat_id = message.chat.id
     user_id = message.from_user.id
@@ -69,5 +70,4 @@ async def shop_buy_callback_handler(callback: types.CallbackQuery):
         await callback.message.answer_sticker(sticker_file_id)
 
     # логируем покупку
-    now = datetime.now()
     db.log_shop_purchase(chat_id, user_id, item_name)

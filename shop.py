@@ -23,13 +23,18 @@ def register_shop_handlers(dp):
         cursor.execute("SELECT item_name, price FROM shop_items")
         items = cursor.fetchall()
 
-        # --- Формируем клавиатуру ---
-        keyboard = InlineKeyboardMarkup()
-        for item_name, price in items:
-            button_text = f"{item_name} — {price} {plural_koins(price)}"
-            keyboard.inline_keyboard.append([InlineKeyboardButton(text=button_text, callback_data=f"shop_buy:{item_name}")])
+        # --- Формируем клавиатуру сразу как список списков ---
+        buttons = [
+            [InlineKeyboardButton(text=f"{item_name} — {price} {plural_koins(price)}",
+                                  callback_data=f"shop_buy:{item_name}")]
+            for item_name, price in items
+        ]
+
+        # если товаров нет, кнопок не будет, но объект создаём корректно
+        keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
 
         await message.answer(text, reply_markup=keyboard)
+
 
     @dp.callback_query(lambda c: c.data and c.data.startswith("shop_buy:"))
     async def shop_buy_callback(callback_query: types.CallbackQuery):

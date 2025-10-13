@@ -4,7 +4,7 @@ from db import Database
 
 # --- Настройки ---
 REWARD_HOUR = 0       # час награждения (0-23)
-REWARD_MINUTE = 5    # минуты
+REWARD_MINUTE = 8    # минуты
 
 
 # награды за активность

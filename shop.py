@@ -1,73 +1,77 @@
-# shop.py
 from aiogram import types
-from aiogram.filters import Command
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from db import Database
-
-db = Database()
-
-# --- Вспомогательная функция для правильного окончания ---
-def plural_koins(amount: int) -> str:
-    return "koin" if amount == 1 else "koins"
+from datetime import datetime
 
 def register_shop_handlers(dp):
-    # --- Команда /shop ---
-    @dp.message(Command("shop"))
+    @dp.message(lambda message: message.text == "/shop")
     async def shop_command_handler(message: types.Message):
+        db = Database()
         chat_id = message.chat.id
         user_id = message.from_user.id
 
         balance = db.get_balance(chat_id, user_id)
 
-        text = f"K8 coffee shop\n\nYour balance is {balance} {plural_koins(balance)}."
+        # --- Функция для правильного множества koin/koins ---
+        def plural_koins(amount):
+            return "koin" if amount == 1 else "koins"
 
-        # Получаем все товары из магазина
+        text = f"K8 coffee chop\n\nYour balance is {balance} {plural_koins(balance)}."
+
+        # --- Получаем товары из магазина ---
         cursor = db.conn.cursor()
         cursor.execute("SELECT item_name, price FROM shop_items")
         items = cursor.fetchall()
 
-        keyboard = InlineKeyboardMarkup(row_width=1)
+        # --- Формируем клавиатуру ---
+        keyboard = InlineKeyboardMarkup()
         for item_name, price in items:
             button_text = f"{item_name} — {price} {plural_koins(price)}"
-            keyboard.add(InlineKeyboardButton(text=button_text, callback_data=f"shop_buy:{item_name}"))
+            keyboard.inline_keyboard.append([InlineKeyboardButton(text=button_text, callback_data=f"shop_buy:{item_name}")])
 
         await message.answer(text, reply_markup=keyboard)
 
-    # --- Обработка нажатия на кнопку покупки ---
-    @dp.callback_query(lambda c: c.data.startswith("shop_buy:"))
-    async def shop_buy_callback_handler(callback: types.CallbackQuery):
-        chat_id = callback.message.chat.id
-        user_id = callback.from_user.id
-        item_name = callback.data.split(":", 1)[1]
+    @dp.callback_query(lambda c: c.data and c.data.startswith("shop_buy:"))
+    async def shop_buy_callback(callback_query: types.CallbackQuery):
+        db = Database()
+        chat_id = callback_query.message.chat.id
+        user_id = callback_query.from_user.id
+        item_name = callback_query.data.split("shop_buy:")[1]
 
+        # получаем цену и текст ответа
         cursor = db.conn.cursor()
-        cursor.execute("SELECT price, response_text, sticker_file_id FROM shop_items WHERE item_name=?", (item_name,))
-        item = cursor.fetchone()
+        cursor.execute("SELECT price, response_text, sticker_file_id FROM shop_items WHERE item_name = ?", (item_name,))
+        result = cursor.fetchone()
 
-        if not item:
-            await callback.answer("Item not found!", show_alert=True)
+        if not result:
+            await callback_query.answer("Item not found!", show_alert=True)
             return
 
-        price, response_text, sticker_file_id = item
+        price, response_text, sticker_file_id = result
         balance = db.get_balance(chat_id, user_id)
 
+        def plural_koins(amount):
+            return "koin" if amount == 1 else "koins"
+
         if balance < price:
-            await callback.answer(
-                "Not enough coins! Be more active in chat to earn more.", show_alert=True
+            await callback_query.answer(
+                "Not enough coins! Be more active in the chat to earn more.",
+                show_alert=True
             )
             return
 
-        # списываем баланс
-        db.deduct_balance(chat_id, user_id, price)
+        # списываем коины
+        db.add_koins(chat_id, user_id, -price)
+        now = datetime.now()
+        db.log_shop_purchase(chat_id, user_id, item_name, now)
 
         # удаляем сообщение с магазином
-        await callback.message.delete()
+        await callback_query.message.delete()
 
-        # отправляем ответ и/или стикер
+        # отправляем текст и стикер (если есть)
         if response_text:
-            await callback.message.answer(response_text)
+            await callback_query.message.answer(response_text)
         if sticker_file_id:
-            await callback.message.answer_sticker(sticker_file_id)
+            await callback_query.message.answer_sticker(sticker_file_id)
 
-        # логируем покупку
-        db.log_shop_purchase(chat_id, user_id, item_name)
+        await callback_query.answer(f"You bought {item_name} for {price} {plural_koins(price)}!")

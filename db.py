@@ -124,12 +124,6 @@ class Database:
         result = cursor.fetchone()
         return result[0] if result else 0
 
-    # Списать баланс
-    def deduct_balance(self, chat_id: int, user_id: int, amount: int):
-        cursor = self.conn.cursor()
-        cursor.execute("UPDATE users SET koins = koins - ? WHERE chat_id=? AND user_id=?", (amount, chat_id, user_id))
-        self.conn.commit()
-
     # Добавить запись в лог магазина
     def log_shop_purchase(self, chat_id: int, user_id: int, item_name: str):
         from datetime import datetime

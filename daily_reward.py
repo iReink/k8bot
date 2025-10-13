@@ -6,6 +6,7 @@ from db import Database
 REWARD_HOUR = 0       # час награждения (0-23)
 REWARD_MINUTE = 5    # минуты
 
+
 # награды за активность
 FIRST_PLACE_REWARD = 3
 SECOND_PLACE_REWARD = 2

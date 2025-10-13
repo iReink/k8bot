@@ -68,7 +68,7 @@ def register_shop_handlers(dp):
         # списываем коины
         db.add_koins(chat_id, user_id, -price)
         now = datetime.now()
-        db.log_shop_purchase(chat_id, user_id, item_name, now)
+        db.log_shop_purchase(chat_id, user_id, item_name)
 
         # удаляем сообщение с магазином
         await callback_query.message.delete()

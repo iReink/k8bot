@@ -23,11 +23,16 @@ API_TOKEN = config.get("bot", "token")
 # --- Инициализация бота и базы ---
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher()
+
+from shop import router as shop_router
+dp.include_router(shop_router)
+
 db = Database()
 
 from daily_reward import daily_reward_task
 from weekly_reward import weekly_reward_task
 from monthly_reward import monthly_reward_task
+
 
 # --- Массив приветствий ---
 GREETINGS = [

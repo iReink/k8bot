@@ -117,4 +117,28 @@ class Database:
         """, (chat_id, user_id, date_str, time_str, reward, amount))
         self.conn.commit()
 
+    # Получить баланс пользователя
+    def get_balance(self, chat_id: int, user_id: int) -> int:
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT koins FROM users WHERE chat_id=? AND user_id=?", (chat_id, user_id))
+        result = cursor.fetchone()
+        return result[0] if result else 0
+
+    # Списать баланс
+    def deduct_balance(self, chat_id: int, user_id: int, amount: int):
+        cursor = self.conn.cursor()
+        cursor.execute("UPDATE users SET koins = koins - ? WHERE chat_id=? AND user_id=?", (amount, chat_id, user_id))
+        self.conn.commit()
+
+    # Добавить запись в лог магазина
+    def log_shop_purchase(self, chat_id: int, user_id: int, item_name: str):
+        from datetime import datetime
+        now = datetime.now()
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            INSERT INTO shop_log (chat_id, user_id, date, time, item_name)
+            VALUES (?, ?, ?, ?, ?)
+        """, (chat_id, user_id, now.strftime("%Y-%m-%d"), now.strftime("%H:%M:%S"), item_name))
+        self.conn.commit()
+
 

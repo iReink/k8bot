@@ -3,17 +3,13 @@ from datetime import datetime, timedelta
 from db import Database
 
 # --- Настройки ---
-REWARD_HOUR = 0       # час награждения (0-23)
-REWARD_MINUTE = 8    # минуты
-
+REWARD_HOUR = 21       # час награждения (0-23)
+REWARD_MINUTE = 0     # минуты
 
 # награды за активность
 FIRST_PLACE_REWARD = 3
 SECOND_PLACE_REWARD = 2
 THIRD_PLACE_REWARD = 1
-
-# награда за длину сообщения
-LONGEST_MESSAGE_REWARD = 1
 
 
 # --- Корутина ежедневного награждения ---
@@ -61,11 +57,8 @@ async def daily_reward_task(bot):
         """, (start_str, end_str))
         top_users = cursor.fetchall()
 
-        message_lines = []
-
         if top_users:
-            message_lines.append("The highest daily message count:")
-
+            message_lines = ["The highest daily message count:"]
             rewards = [FIRST_PLACE_REWARD, SECOND_PLACE_REWARD, THIRD_PLACE_REWARD]
             places = ["1st", "2nd", "3rd"]
 
@@ -79,28 +72,8 @@ async def daily_reward_task(bot):
 
                 message_lines.append(f"{place} place — {nick} ({msg_count} messages, +{reward} koins)")
 
-        # --- Самое длинное сообщение ---
-        cursor.execute("""
-            SELECT u.chat_id, u.user_id, u.nick, LENGTH(m.message_text) as msg_length
-            FROM messages m
-            JOIN users u ON m.chat_id = u.chat_id AND m.user_id = u.user_id
-            WHERE m.date || ' ' || m.time BETWEEN ? AND ?
-            ORDER BY msg_length DESC
-            LIMIT 1
-        """, (start_str, end_str))
-        longest_message = cursor.fetchone()
-
-        if longest_message:
-            chat_id, user_id, nick, msg_length = longest_message
-            db.add_koins(chat_id, user_id, LONGEST_MESSAGE_REWARD)
-            db.log_reward(chat_id, user_id, "daily_longest_message", LONGEST_MESSAGE_REWARD)
-
-            message_lines.append("")
-            message_lines.append(f"The longest message: {nick} ({msg_length} characters, +{LONGEST_MESSAGE_REWARD} koin)")
-
-        # --- Отправка общего сообщения ---
-        if message_lines:
             text = "\n".join(message_lines)
             await bot.send_message(chat_id, text)
 
+        # ждём немного перед следующей итерацией
         await asyncio.sleep(60)

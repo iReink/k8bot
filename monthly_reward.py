@@ -10,19 +10,8 @@ REWARD_MINUTE = 5
 # награды за 1–10 место
 MONTHLY_REWARDS = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
 
-# --- Фразы для награждения ---
-PLACE_MESSAGES = [
-    "1st place — {nick} ({count} messages, +{reward} koins)",
-    "2nd place — {nick} ({count} messages, +{reward} koins)",
-    "3rd place — {nick} ({count} messages, +{reward} koins)",
-    "4th place — {nick} ({count} messages, +{reward} koins)",
-    "5th place — {nick} ({count} messages, +{reward} koins)",
-    "6th place — {nick} ({count} messages, +{reward} koins)",
-    "7th place — {nick} ({count} messages, +{reward} koins)",
-    "8th place — {nick} ({count} messages, +{reward} koins)",
-    "9th place — {nick} ({count} messages, +{reward} koins)",
-    "10th place — {nick} ({count} messages, +{reward} koins)",
-]
+# награда за самое длинное сообщение месяца
+LONGEST_MESSAGE_REWARD = 10
 
 
 # --- Корутина ежемесячной награды ---
@@ -62,9 +51,9 @@ async def monthly_reward_task(bot):
 
         cursor = db.conn.cursor()
 
-        # --- Топ-10 по сообщениям ---
+        # --- Топ-10 по активности ---
         cursor.execute("""
-            SELECT u.chat_id, u.user_id, u.nick, COUNT(m.message_id) as msg_count
+            SELECT u.chat_id, u.user_id, u.nick, COUNT(m.message_id) AS msg_count
             FROM messages m
             JOIN users u ON m.chat_id = u.chat_id AND m.user_id = u.user_id
             WHERE m.date || ' ' || m.time BETWEEN ? AND ?
@@ -75,10 +64,28 @@ async def monthly_reward_task(bot):
 
         top_users = cursor.fetchall()
 
-        if top_users:
-            chat_id = top_users[0][0]
-            await bot.send_message(chat_id, "🌟 **Monthly activity results:**")
+        # --- Самое длинное сообщение месяца ---
+        cursor.execute("""
+            SELECT u.chat_id, u.user_id, u.nick, m.text, LENGTH(m.text) - LENGTH(REPLACE(m.text, ' ', '')) + 1 AS word_count
+            FROM messages m
+            JOIN users u ON m.chat_id = u.chat_id AND m.user_id = u.user_id
+            WHERE m.date || ' ' || m.time BETWEEN ? AND ?
+            ORDER BY word_count DESC
+            LIMIT 1
+        """, (start_str, end_str))
 
+        longest_msg = cursor.fetchone()
+
+        if not top_users and not longest_msg:
+            await asyncio.sleep(60)
+            continue
+
+        chat_id = top_users[0][0] if top_users else longest_msg[0]
+        message_lines = ["🌟 **Monthly results:**"]
+
+        # --- Формирование списка топ-10 ---
+        if top_users:
+            message_lines.append("\n**Top active users:**")
             for i, user in enumerate(top_users):
                 if i >= len(MONTHLY_REWARDS):
                     break
@@ -88,10 +95,20 @@ async def monthly_reward_task(bot):
                 db.add_koins(chat_id, user_id, reward)
                 db.log_reward(chat_id, user_id, "monthly_most_active", reward)
 
-                message_text = PLACE_MESSAGES[i].format(
-                    nick=nick, count=msg_count, reward=reward
-                )
-                await bot.send_message(chat_id, message_text)
+                place = f"{i+1}st" if i == 0 else f"{i+1}nd" if i == 1 else f"{i+1}rd" if i == 2 else f"{i+1}th"
+                message_lines.append(f"{place} place — {nick} ({msg_count} messages, +{reward} koins)")
+
+        # --- Самое длинное сообщение ---
+        if longest_msg:
+            chat_id, user_id, nick, text, word_count = longest_msg
+            db.add_koins(chat_id, user_id, LONGEST_MESSAGE_REWARD)
+            db.log_reward(chat_id, user_id, "monthly_longest_message", LONGEST_MESSAGE_REWARD)
+            message_lines.append(
+                f"\n📝 Longest message — {nick} ({word_count} words, +{LONGEST_MESSAGE_REWARD} koins)"
+            )
+
+        # отправляем всё одним сообщением
+        await bot.send_message(chat_id, "\n".join(message_lines))
 
         # чтобы не сработало дважды подряд
         await asyncio.sleep(60)

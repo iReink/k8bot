@@ -24,8 +24,9 @@ API_TOKEN = config.get("bot", "token")
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher()
 
-from shop import router as shop_router
-dp.include_router(shop_router)
+from shop import register_shop_handlers
+register_shop_handlers(dp)
+
 
 db = Database()
 
@@ -42,8 +43,6 @@ GREETINGS = [
     "Hi, {nick}! Excited to see you here. How are things?",
     "Greetings, {nick}! Ready to practice some English today?"
 ]
-
-
 
 
 # --- Обработчик всех сообщений ---

@@ -6,21 +6,24 @@ from db import Database
 # --- Настройки ---
 REWARD_HOUR = 21
 REWARD_MINUTE = 3
-WEEKLY_REWARD = 20
 
-# --- Поздравительные фразы ---
-MOST_ACTIVE_MESSAGES = [
-    "{nick} wrote the most messages this week. We give you {most_active_reward} koins."
+# награды за 1–5 место
+WEEKLY_REWARDS = [5, 4, 3, 2, 1]
+
+# --- Фразы для награждения ---
+PLACE_MESSAGES = [
+    "1st place — {nick} ({count} messages, +{reward} koins)",
+    "2nd place — {nick} ({count} messages, +{reward} koins)",
+    "3rd place — {nick} ({count} messages, +{reward} koins)",
+    "4th place — {nick} ({count} messages, +{reward} koins)",
+    "5th place — {nick} ({count} messages, +{reward} koins)",
 ]
 
-LONGEST_MESSAGE_MESSAGES = [
-    "The longest message of the week was written by {nick}."
-]
 
 # --- Корутина еженедельной награды ---
 async def weekly_reward_task(bot):
     db = Database()
-    last_reward_date = None  # дата последней награды
+    last_reward_date = None  # защита от повторной награды
 
     while True:
         now = datetime.now()
@@ -32,22 +35,22 @@ async def weekly_reward_task(bot):
             days_ahead += 7
         reward_time += timedelta(days=days_ahead)
 
-        # если уже после награды — на следующее воскресенье
+        # если уже после награды — переносим на следующее воскресенье
         if now >= reward_time:
             reward_time += timedelta(weeks=1)
 
+        # ждём до времени награды
         wait_seconds = (reward_time - now).total_seconds()
         await asyncio.sleep(wait_seconds)
 
-        # --- защита от двойной награды ---
+        # защита от повторной награды в тот же день
         today = datetime.now().date()
         if last_reward_date == today:
             await asyncio.sleep(60)
             continue
+        last_reward_date = today
 
-        last_reward_date = today  # запоминаем дату, чтобы не выдать награду снова
-
-        # диапазон сообщений
+        # диапазон сообщений за неделю
         end_time = reward_time
         start_time = end_time - timedelta(weeks=1)
 
@@ -56,7 +59,7 @@ async def weekly_reward_task(bot):
 
         cursor = db.conn.cursor()
 
-        # --- Самый активный ---
+        # --- Топ-5 по сообщениям ---
         cursor.execute("""
             SELECT u.chat_id, u.user_id, u.nick, COUNT(m.message_id) as msg_count
             FROM messages m
@@ -64,39 +67,28 @@ async def weekly_reward_task(bot):
             WHERE m.date || ' ' || m.time BETWEEN ? AND ?
             GROUP BY u.chat_id, u.user_id
             ORDER BY msg_count DESC
-            LIMIT 1
+            LIMIT 5
         """, (start_str, end_str))
-        most_active = cursor.fetchone()
 
-        if most_active:
-            chat_id, user_id, nick, _ = most_active
-            db.add_koins(chat_id, user_id, WEEKLY_REWARD)
-            db.log_reward(chat_id, user_id, "weekly_most_active", WEEKLY_REWARD)
-            message_text = random.choice(MOST_ACTIVE_MESSAGES).format(
-                nick=nick, most_active_reward=WEEKLY_REWARD
-            )
-            await bot.send_message(chat_id, message_text)
+        top_users = cursor.fetchall()
 
-        # --- Самое длинное сообщение ---
-        cursor.execute("""
-            SELECT u.chat_id, u.user_id, u.nick, LENGTH(m.message_text) as msg_length
-            FROM messages m
-            JOIN users u ON m.chat_id = u.chat_id AND m.user_id = u.user_id
-            WHERE m.date || ' ' || m.time BETWEEN ? AND ?
-            ORDER BY msg_length DESC
-            LIMIT 1
-        """, (start_str, end_str))
-        longest_message = cursor.fetchone()
+        if top_users:
+            chat_id = top_users[0][0]
+            await bot.send_message(chat_id, "🏆 **Weekly activity results:**")
 
-        if longest_message:
-            chat_id, user_id, nick, _ = longest_message
-            db.add_koins(chat_id, user_id, WEEKLY_REWARD)
-            db.log_reward(chat_id, user_id, "weekly_longest_message", WEEKLY_REWARD)
-            message_text = random.choice(LONGEST_MESSAGE_MESSAGES).format(
-                nick=nick, longest_message_reward=WEEKLY_REWARD
-            )
-            await bot.send_message(chat_id, message_text)
+            for i, user in enumerate(top_users):
+                if i >= len(WEEKLY_REWARDS):
+                    break
+                chat_id, user_id, nick, msg_count = user
+                reward = WEEKLY_REWARDS[i]
 
-        # чтобы не сработало дважды из-за миллисекунд
+                db.add_koins(chat_id, user_id, reward)
+                db.log_reward(chat_id, user_id, "weekly_most_active", reward)
+
+                message_text = PLACE_MESSAGES[i].format(
+                    nick=nick, count=msg_count, reward=reward
+                )
+                await bot.send_message(chat_id, message_text)
+
+        # чтобы не повторялось мгновенно
         await asyncio.sleep(60)
-

@@ -2,23 +2,13 @@ import sqlite3
 
 DB_NAME = "stats.db"
 
-def create_shop_tables_and_insert_items():
+def remove_amount_from_shop_log():
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
 
-    # Таблица товаров магазина
+    # Создаём новую таблицу без поля amount
     cursor.execute("""
-    CREATE TABLE IF NOT EXISTS shop_items (
-        item_name TEXT PRIMARY KEY,
-        price INTEGER NOT NULL,
-        response_text TEXT,
-        sticker_file_id TEXT
-    );
-    """)
-
-    # Таблица логов покупок (без поля amount)
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS shop_log (
+    CREATE TABLE IF NOT EXISTS shop_log_new (
         chat_id INTEGER NOT NULL,
         user_id INTEGER NOT NULL,
         date TEXT NOT NULL,
@@ -28,22 +18,21 @@ def create_shop_tables_and_insert_items():
     );
     """)
 
-    # Добавление товаров в магазин
-    shop_items = [
-        ("cappuccino", 2, "Here's your cappuccino. Enjoy!", "CAACAgIAAyEFAASjKavKAAILDGjtFSC5Vwt8gdrqVcQioyNYB0fBAAKLhwACSN9pS7dWBha3mj-PNgQ"),
-        ("regular coffee", 1, "Your regular coffee is ready", "CAACAgIAAyEFAASjKavKAAILCmjtFQ1XrJF9ogxyMtUFcgT7zA-vAAJqfwACq5JxSz3gXCEUzl2ONgQ"),
-        ("pastel de nata", 1, "Good choice! Here's your pastel de nata", "CAACAgIAAyEFAASjKavKAAILDmjtFTSR6C5gEZhkrwXT0XuXQBRBAAKVggACBBZpS4GBz0PyVczoNgQ"),
-        ("water with lemon", 0, "Your water with lemon, have a nice day!", None)
-    ]
+    # Копируем данные из старой таблицы
+    cursor.execute("""
+    INSERT OR IGNORE INTO shop_log_new (chat_id, user_id, date, time, item_name)
+    SELECT chat_id, user_id, date, time, item_name FROM shop_log;
+    """)
 
-    cursor.executemany("""
-    INSERT OR IGNORE INTO shop_items (item_name, price, response_text, sticker_file_id)
-    VALUES (?, ?, ?, ?);
-    """, shop_items)
+    # Удаляем старую таблицу
+    cursor.execute("DROP TABLE shop_log;")
+
+    # Переименовываем новую таблицу
+    cursor.execute("ALTER TABLE shop_log_new RENAME TO shop_log;")
 
     conn.commit()
     conn.close()
-    print("Таблицы 'shop_items' и 'shop_log' созданы, товары добавлены.")
+    print("Поле 'amount' успешно удалено из таблицы 'shop_log'.")
 
 if __name__ == "__main__":
-    create_shop_tables_and_insert_items()
+    remove_amount_from_shop_log()

@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b49ce1fc-bad8-479c-a71a-db81dfed4435" name="Changes" comment="Добавление магазина - фиксы">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/new_tables.py" beforeDir="false" afterPath="$PROJECT_DIR$/new_tables.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop.py" beforeDir="false" afterPath="$PROJECT_DIR$/shop.py" afterDir="false" />
-    </list>
+    <list default="true" id="b49ce1fc-bad8-479c-a71a-db81dfed4435" name="Changes" comment="Добавлено имя в магазине при покупке" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -276,7 +272,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760388083256</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="Добавлено имя в магазине при покупке">
+      <option name="closed" value="true" />
+      <created>1760414760153</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1760414760153</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -306,6 +310,7 @@
     <MESSAGE value="Создание новых таблиц" />
     <MESSAGE value="Добавление магазина" />
     <MESSAGE value="Добавление магазина - фиксы" />
-    <option name="LAST_COMMIT_MESSAGE" value="Добавление магазина - фиксы" />
+    <MESSAGE value="Добавлено имя в магазине при покупке" />
+    <option name="LAST_COMMIT_MESSAGE" value="Добавлено имя в магазине при покупке" />
   </component>
 </project>

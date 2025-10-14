@@ -62,7 +62,7 @@ def register_shop_handlers(dp):
 
         if balance < price:
             await callback_query.answer(
-                "Not enough coins! Be more active in the chat to earn more.",
+                "Not enough koins! Be more active in the chat to earn more.",
                 show_alert=True
             )
             return

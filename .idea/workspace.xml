@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b49ce1fc-bad8-479c-a71a-db81dfed4435" name="Changes" comment="Обычное время для наград" />
+    <list default="true" id="b49ce1fc-bad8-479c-a71a-db81dfed4435" name="Changes" comment="Фикс магазина /shop@...">
+      <change beforePath="$PROJECT_DIR$/shop.py" beforeDir="false" afterPath="$PROJECT_DIR$/shop.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -304,7 +306,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760417221156</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="Фикс магазина /shop@...">
+      <option name="closed" value="true" />
+      <created>1760430121375</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1760430121375</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -338,6 +348,7 @@
     <MESSAGE value="Игнор Кати" />
     <MESSAGE value="Тест сообщений о награде" />
     <MESSAGE value="Обычное время для наград" />
-    <option name="LAST_COMMIT_MESSAGE" value="Обычное время для наград" />
+    <MESSAGE value="Фикс магазина /shop@..." />
+    <option name="LAST_COMMIT_MESSAGE" value="Фикс магазина /shop@..." />
   </component>
 </project>

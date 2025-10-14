@@ -3,8 +3,8 @@ from datetime import datetime, timedelta
 from db import Database
 
 # --- Настройки ---
-REWARD_HOUR = 21       # час награждения (0-23)
-REWARD_MINUTE = 0     # минуты
+REWARD_HOUR = 9       # час награждения (0-23)
+REWARD_MINUTE = 42     # минуты
 
 # награды за активность
 FIRST_PLACE_REWARD = 3

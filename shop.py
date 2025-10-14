@@ -2,9 +2,11 @@ from aiogram import types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from db import Database
 from datetime import datetime
+from aiogram.filters import Command
+from aiogram import F
 
 def register_shop_handlers(dp):
-    @dp.message(lambda message: message.text == "/shop")
+    @dp.message(F.text.startswith("/shop"))
     async def shop_command_handler(message: types.Message):
         db = Database()
         chat_id = message.chat.id

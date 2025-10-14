@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b49ce1fc-bad8-479c-a71a-db81dfed4435" name="Changes" comment="Игнор Кати">
+    <list default="true" id="b49ce1fc-bad8-479c-a71a-db81dfed4435" name="Changes" comment="Тест сообщений о награде">
       <change beforePath="$PROJECT_DIR$/daily_reward.py" beforeDir="false" afterPath="$PROJECT_DIR$/daily_reward.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/weekly_reward.py" beforeDir="false" afterPath="$PROJECT_DIR$/weekly_reward.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -290,7 +291,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760415002481</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="Тест сообщений о награде">
+      <option name="closed" value="true" />
+      <created>1760416882530</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1760416882530</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -322,6 +331,7 @@
     <MESSAGE value="Добавление магазина - фиксы" />
     <MESSAGE value="Добавлено имя в магазине при покупке" />
     <MESSAGE value="Игнор Кати" />
-    <option name="LAST_COMMIT_MESSAGE" value="Игнор Кати" />
+    <MESSAGE value="Тест сообщений о награде" />
+    <option name="LAST_COMMIT_MESSAGE" value="Тест сообщений о награде" />
   </component>
 </project>

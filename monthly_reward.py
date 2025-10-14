@@ -4,8 +4,8 @@ import calendar
 from db import Database
 
 # --- Настройки ---
-REWARD_HOUR = 9
-REWARD_MINUTE = 45
+REWARD_HOUR = 21
+REWARD_MINUTE = 5
 
 # награды за 1–10 место
 MONTHLY_REWARDS = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
@@ -22,8 +22,7 @@ async def monthly_reward_task(bot):
         now = datetime.now()
 
         # последний день текущего месяца
-        #last_day = calendar.monthrange(now.year, now.month)[1]
-        last_day = now.day  # чтобы награда считалась сегодня
+        last_day = calendar.monthrange(now.year, now.month)[1]
 
         reward_time = now.replace(day=last_day, hour=REWARD_HOUR, minute=REWARD_MINUTE, second=0, microsecond=0)
 

@@ -3,8 +3,8 @@ from datetime import datetime, timedelta
 from db import Database
 
 # --- Настройки ---
-REWARD_HOUR = 9
-REWARD_MINUTE = 43
+REWARD_HOUR = 21
+REWARD_MINUTE = 3
 
 # награды за 1–5 места
 WEEKLY_REWARDS = [5, 4, 3, 2, 1]
@@ -30,7 +30,7 @@ async def weekly_reward_task(bot):
 
         # следующее воскресенье
         reward_time = now.replace(hour=REWARD_HOUR, minute=REWARD_MINUTE, second=0, microsecond=0)
-        days_ahead = 1 - reward_time.weekday()
+        days_ahead = 6 - reward_time.weekday()
         if days_ahead < 0:
             days_ahead += 7
         reward_time += timedelta(days=days_ahead)
@@ -72,7 +72,7 @@ async def weekly_reward_task(bot):
         message_lines = []
 
         if top_users:
-            message_lines.append("🏆 **Weekly activity results:**")
+            message_lines.append("The highest weekly message count:")
             chat_id = top_users[0][0]
 
             for i, user in enumerate(top_users):

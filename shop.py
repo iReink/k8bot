@@ -1,18 +1,27 @@
-from aiogram import types
+from aiogram import types, F
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from db import Database
-from datetime import datetime
 from aiogram.filters import Command
-from aiogram import F
+from datetime import datetime
+from db import Database
+import logging
+
+logger = logging.getLogger(__name__)
 
 def register_shop_handlers(dp):
-    @dp.message(F.text.startswith("/shop"))
+    @dp.message(F.text.regexp(r"^/shop(@\w+)?$"))  # реагирует на /shop и /shop@k8_english_bot
     async def shop_command_handler(message: types.Message):
         db = Database()
         chat_id = message.chat.id
-        user_id = message.from_user.id
+        user = message.from_user
 
-        balance = db.get_balance(chat_id, user_id)
+        # --- Проверка и добавление пользователя ---
+        chat_name = message.chat.title if message.chat.title else "Private chat"
+        if not db.user_exists(chat_id, user.id):
+            nick = f"@{user.username}" if user.username else user.full_name
+            db.add_user(chat_id, user.id, user.full_name, nick)
+            logger.info(f"Auto-added user {nick} ({user.id}) in chat '{chat_name}'")
+
+        balance = db.get_balance(chat_id, user.id)
 
         # --- Функция для правильного множества koin/koins ---
         def plural_koins(amount):
@@ -25,27 +34,33 @@ def register_shop_handlers(dp):
         cursor.execute("SELECT item_name, price FROM shop_items")
         items = cursor.fetchall()
 
-        # --- Формируем клавиатуру сразу как список списков ---
+        # --- Формируем клавиатуру ---
         buttons = [
-            [InlineKeyboardButton(text=f"{item_name} — {price} {plural_koins(price)}",
-                                  callback_data=f"shop_buy:{item_name}")]
+            [InlineKeyboardButton(
+                text=f"{item_name} — {price} {plural_koins(price)}",
+                callback_data=f"shop_buy:{item_name}"
+            )]
             for item_name, price in items
         ]
 
-        # если товаров нет, кнопок не будет, но объект создаём корректно
         keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
-
         await message.answer(text, parse_mode="HTML", reply_markup=keyboard)
-
 
     @dp.callback_query(lambda c: c.data and c.data.startswith("shop_buy:"))
     async def shop_buy_callback(callback_query: types.CallbackQuery):
         db = Database()
         chat_id = callback_query.message.chat.id
-        user_id = callback_query.from_user.id
+        user = callback_query.from_user
         item_name = callback_query.data.split("shop_buy:")[1]
 
-        # получаем цену и текст ответа
+        # --- Проверка и добавление пользователя ---
+        chat_name = callback_query.message.chat.title if callback_query.message.chat.title else "Private chat"
+        if not db.user_exists(chat_id, user.id):
+            nick = f"@{user.username}" if user.username else user.full_name
+            db.add_user(chat_id, user.id, user.full_name, nick)
+            logger.info(f"Auto-added user {nick} ({user.id}) in chat '{chat_name}'")
+
+        # --- Получаем цену и ответ ---
         cursor = db.conn.cursor()
         cursor.execute("SELECT price, response_text, sticker_file_id FROM shop_items WHERE item_name = ?", (item_name,))
         result = cursor.fetchone()
@@ -55,7 +70,7 @@ def register_shop_handlers(dp):
             return
 
         price, response_text, sticker_file_id = result
-        balance = db.get_balance(chat_id, user_id)
+        balance = db.get_balance(chat_id, user.id)
 
         def plural_koins(amount):
             return "koin" if amount == 1 else "koins"
@@ -67,18 +82,16 @@ def register_shop_handlers(dp):
             )
             return
 
-        # списываем коины
-        db.add_koins(chat_id, user_id, -price)
+        # --- Списание коинов и запись покупки ---
+        db.add_koins(chat_id, user.id, -price)
         now = datetime.now()
-        db.log_shop_purchase(chat_id, user_id, item_name)
+        db.log_shop_purchase(chat_id, user.id, item_name)
 
-        # удаляем сообщение с магазином
+        # --- Удаляем сообщение с магазином ---
         await callback_query.message.delete()
 
-        # отправляем текст и стикер (если есть)
-        # получаем имя пользователя
-        name = db.get_name(chat_id, user_id)
-        # если в тексте есть {name}, подставляем его
+        # --- Получаем имя пользователя и подставляем ---
+        name = db.get_name(chat_id, user.id)
         if response_text:
             response_text = response_text.format(name=name)
             await callback_query.message.answer(response_text)

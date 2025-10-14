@@ -16,7 +16,7 @@ def register_shop_handlers(dp):
         def plural_koins(amount):
             return "koin" if amount == 1 else "koins"
 
-        text = f"K8 coffee chop\n\nYour balance is {balance} {plural_koins(balance)}."
+        text = f"<b>K8 coffee shop</b>\nYour balance is {balance} {plural_koins(balance)}."
 
         # --- Получаем товары из магазина ---
         cursor = db.conn.cursor()
@@ -33,7 +33,7 @@ def register_shop_handlers(dp):
         # если товаров нет, кнопок не будет, но объект создаём корректно
         keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
 
-        await message.answer(text, reply_markup=keyboard)
+        await message.answer(text, parse_mode="HTML", reply_markup=keyboard)
 
 
     @dp.callback_query(lambda c: c.data and c.data.startswith("shop_buy:"))
@@ -74,8 +74,13 @@ def register_shop_handlers(dp):
         await callback_query.message.delete()
 
         # отправляем текст и стикер (если есть)
+        # получаем имя пользователя
+        name = db.get_name(chat_id, user_id)
+        # если в тексте есть {name}, подставляем его
         if response_text:
+            response_text = response_text.format(name=name)
             await callback_query.message.answer(response_text)
+
         if sticker_file_id:
             await callback_query.message.answer_sticker(sticker_file_id)
 

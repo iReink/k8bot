@@ -135,4 +135,12 @@ class Database:
         """, (chat_id, user_id, now.strftime("%Y-%m-%d"), now.strftime("%H:%M:%S"), item_name))
         self.conn.commit()
 
+    #Возвращает имя пользователи или «друг» если имя отсутствует
+    def get_name(self, chat_id: int, user_id: int) -> str:
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT name FROM users WHERE chat_id = ? AND user_id = ?", (chat_id, user_id))
+        row = cursor.fetchone()
+        return row[0] if row and row[0] else "friend"
+
+
 

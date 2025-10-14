@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b49ce1fc-bad8-479c-a71a-db81dfed4435" name="Changes" comment="Добавление магазина" />
+    <list default="true" id="b49ce1fc-bad8-479c-a71a-db81dfed4435" name="Changes" comment="Добавление магазина - фиксы">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/new_tables.py" beforeDir="false" afterPath="$PROJECT_DIR$/new_tables.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop.py" beforeDir="false" afterPath="$PROJECT_DIR$/shop.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -248,7 +252,31 @@
       <option name="project" value="LOCAL" />
       <updated>1760387684188</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Добавление магазина">
+      <option name="closed" value="true" />
+      <created>1760387802168</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1760387802168</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Добавление магазина - фиксы">
+      <option name="closed" value="true" />
+      <created>1760387914993</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1760387914993</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Добавление магазина - фиксы">
+      <option name="closed" value="true" />
+      <created>1760388083256</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1760388083256</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -277,6 +305,7 @@
     <MESSAGE value="Обновления наград" />
     <MESSAGE value="Создание новых таблиц" />
     <MESSAGE value="Добавление магазина" />
-    <option name="LAST_COMMIT_MESSAGE" value="Добавление магазина" />
+    <MESSAGE value="Добавление магазина - фиксы" />
+    <option name="LAST_COMMIT_MESSAGE" value="Добавление магазина - фиксы" />
   </component>
 </project>

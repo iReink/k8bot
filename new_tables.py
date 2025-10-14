@@ -2,37 +2,26 @@ import sqlite3
 
 DB_NAME = "stats.db"
 
-def remove_amount_from_shop_log():
+def update_shop_responses_with_name():
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
 
-    # Создаём новую таблицу без поля amount
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS shop_log_new (
-        chat_id INTEGER NOT NULL,
-        user_id INTEGER NOT NULL,
-        date TEXT NOT NULL,
-        time TEXT NOT NULL,
-        item_name TEXT NOT NULL,
-        PRIMARY KEY (chat_id, user_id, date, time, item_name)
-    );
-    """)
+    updates = [
+        ("{name}, here's your cappuccino. Enjoy!", "cappuccino"),
+        ("{name}, your regular coffee is ready.", "regular coffee"),
+        ("Good choice, {name}! Here's your pastel de nata.", "pastel de nata"),
+    ]
 
-    # Копируем данные из старой таблицы
-    cursor.execute("""
-    INSERT OR IGNORE INTO shop_log_new (chat_id, user_id, date, time, item_name)
-    SELECT chat_id, user_id, date, time, item_name FROM shop_log;
-    """)
-
-    # Удаляем старую таблицу
-    cursor.execute("DROP TABLE shop_log;")
-
-    # Переименовываем новую таблицу
-    cursor.execute("ALTER TABLE shop_log_new RENAME TO shop_log;")
+    for text, item_name in updates:
+        cursor.execute("""
+        UPDATE shop_items
+        SET response_text = ?
+        WHERE item_name = ?;
+        """, (text, item_name))
 
     conn.commit()
     conn.close()
-    print("Поле 'amount' успешно удалено из таблицы 'shop_log'.")
+    print("Фразы-ответы успешно обновлены с добавлением {name}.")
 
 if __name__ == "__main__":
-    remove_amount_from_shop_log()
+    update_shop_responses_with_name()

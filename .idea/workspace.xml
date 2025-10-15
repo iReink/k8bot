@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b49ce1fc-bad8-479c-a71a-db81dfed4435" name="Changes" comment="Фикс магазина и добавления новых юзеров">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daily_reward.py" beforeDir="false" afterPath="$PROJECT_DIR$/daily_reward.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/monthly_reward.py" beforeDir="false" afterPath="$PROJECT_DIR$/monthly_reward.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/weekly_reward.py" beforeDir="false" afterPath="$PROJECT_DIR$/weekly_reward.py" afterDir="false" />
-    </list>
+    <list default="true" id="b49ce1fc-bad8-479c-a71a-db81dfed4435" name="Changes" comment="Фикс наград" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -333,7 +328,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760433336292</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="Фикс наград">
+      <option name="closed" value="true" />
+      <created>1760468829984</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1760468829984</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -369,6 +372,7 @@
     <MESSAGE value="Обычное время для наград" />
     <MESSAGE value="Фикс магазина /shop@..." />
     <MESSAGE value="Фикс магазина и добавления новых юзеров" />
-    <option name="LAST_COMMIT_MESSAGE" value="Фикс магазина и добавления новых юзеров" />
+    <MESSAGE value="Фикс наград" />
+    <option name="LAST_COMMIT_MESSAGE" value="Фикс наград" />
   </component>
 </project>
